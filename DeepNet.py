@@ -17,20 +17,20 @@ def main():
     
     np.random.seed(1)
     
-    network = DeepNet(X[0], [4,4], y[0])
+    network = DeepNet(X[0], [4], y[0])
     
     #network = generateDeepNet(X[0], [4], y[0])
 
 
     for i in range(60000):
-        activations, error = network.fullPass(X, y)
+        network.fullPass(X, y)
         
         if(i % 10000) == 0:   # Only print the error every 10000 steps, to save time and limit the amount of output. 
             print("Epoch "+ str(i))
-            print("Error : " + str(np.mean(np.abs(error))))
+            print("Error : " + str(np.mean(np.abs(network.pass_error))))
 #            print("outputs : " +  str(outputs) )
     print("output after training")
-    print(activations[-1])
+    print(network.activations[-1])
 
  
 class DeepNet:
@@ -47,7 +47,7 @@ class DeepNet:
     def fullPass(self, observations, conclusions):
         self.forwardPass(observations)
         self.backwardPass(conclusions)
-        return self.activations, self.pass_error
+
     
     def generateDeepNet(self, observation, layer_sizes, conclusion):
         """
@@ -84,6 +84,7 @@ class DeepNet:
         activations = []
         
         #first activation is the observation
+        #hstack adds bias node to each observation
         activations.append(np.hstack ((observations, [[1]] * len (observations) )))
         
         #pass the activation through the network
